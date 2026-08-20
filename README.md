@@ -12,7 +12,9 @@ operations, native FFI, memory use, and compiler flags.
 ```text
 ├── input.txt             # microGPT names dataset
 ├── microgpt.py           # Python reference
+├── microgpt.c            # C comparison
 ├── microgpt.rs           # Rust comparison
+├── microgpt.zig          # Zig comparison
 └── ts/
     ├── microgpt.ts       # object-heavy TypeScript port
     ├── microgpt-flat.ts   # flat tape + fused dot-product operations
@@ -27,11 +29,21 @@ operations, native FFI, memory use, and compiler flags.
 
 ## Reproduce
 
-Install or build `scriptc`, then run the full 1,000-step workload:
+Install or build `scriptc`, plus a C compiler, Rust, and Zig, then run the full
+1,000-step workload:
 
 ```sh
 cd ts
 SCRIPTC=/path/to/scriptc ./bench.sh
+```
+
+The benchmark builds the C, Rust, and Zig implementations as part of the run.
+To build one of them directly from this directory:
+
+```sh
+cc -std=gnu11 -O2 microgpt.c -lm -o microgpt-c
+rustc -O microgpt.rs -o microgpt-rust
+zig build-exe -O ReleaseFast microgpt.zig -lc -lm -femit-bin=microgpt-zig
 ```
 
 `input.txt` is intentionally gitignored. If it is absent, `bench.sh` fetches
@@ -70,4 +82,7 @@ for the exact measurements and limitations.
 The result supports a qualified Signet hypothesis: scriptc is promising for a
 single production binary, but adopting it requires optimizing hot paths around
 flat data, fused operations, and explicit native boundaries. It is not a
-transparent compile-only speedup.
+transparent compile-only speedup. The native-language comparisons provide a
+useful lower-bound reference: the C and Zig ports complete the same workload in
+about 0.6 seconds, while Rust takes about 4.7 seconds; see the benchmark table
+for the exact environment and measurements.
