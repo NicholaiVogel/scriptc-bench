@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Compare the dependency-free microGPT workload across Python, Bun, and scriptc.
+# Compare the dependency-free microGPT workload across language/runtime implementations.
 # Usage: SCRIPTC=/path/to/scriptc ./bench.sh [steps] [runs]
 set -euo pipefail
 
