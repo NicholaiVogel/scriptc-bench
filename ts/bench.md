@@ -13,7 +13,7 @@ The TypeScript port is algorithmically equivalent to `microgpt.py`, but it does 
 | Training steps | 1,000, matching the original `microgpt.py` default |
 | Inference | 20 generated samples |
 | Runs | 1 full run per variant |
-| Host | Linux x86-64, Bun 1.3.11, Node 26.5.0, Python 3.12.12, Rust 1.91.1, GCC/G++ 16.1.1, Zig 0.16.0 |
+| Host | Linux x86-64, Bun 1.4.0, Node 26.5.0, Python 3.12.12, Rust 1.91.1, GCC/G++ 16.1.1, Zig 0.16.0 |
 | scriptc | 0.0.33 |
 
 The original Python default is 1,000 steps. The benchmark adds an environment override, `MICROGPT_STEPS`, while retaining the 1,000-step default for ordinary use.
@@ -22,21 +22,29 @@ The original Python default is 1,000 steps. The benchmark adds an environment ov
 
 | Variant | Wall time | Peak RSS | Binary size |
 | --- | ---: | ---: | ---: |
-| Python | 164.64 s | 61 MB | interpreter |
-| Rust (`rustc -O`) | 4.72 s | 4.9 MB | 3.9 MB |
-| C (`cc -std=gnu11 -O2`) | 0.58 s | 48 MB | 25 KB |
+| Bun 1.4.0 `--compile`, fused flat tape | 0.31 s | 305 MB | 95 MB |
+| Bun 1.3.11 source, fused flat tape | 0.33 s | 154 MB | runtime |
+| Bun 1.3.11 `--compile`, fused flat tape | 0.36 s | 149 MB | 95 MB |
+| Bun 1.4.0 source, fused flat tape | 0.36 s | 106 MB | runtime |
 | C++ (`g++ -std=gnu++17 -O2`) | 0.55 s | 49.8 MB | 26 KB |
+| C (`cc -std=gnu11 -O2`) | 0.58 s | 48 MB | 25 KB |
 | Zig (`zig build-exe -O ReleaseFast`) | 0.59 s | 47.8 MB | 118 KB |
-| Bun source | 9.15 s | 454 MB | runtime |
-| Bun `--compile` | 9.36 s | 413 MB | 95 MB |
-| scriptc `--dynamic` | 110.76 s | 74 MB | 1.7 MB |
-| scriptc static FFI | 105.82 s | 73 MB | 625 KB |
-| Bun source, fused flat tape | 0.33 s | 154 MB | runtime |
-| Bun `--compile`, fused flat tape | 0.36 s | 149 MB | 95 MB |
-| scriptc, fused flat tape (`--dynamic`) | 4.58 s | 55 MB | 1.6 MB |
 | scriptc, fused flat tape + native math FFI | 4.19 s | 55 MB | 615 KB |
+| scriptc, fused flat tape (`--dynamic`) | 4.58 s | 55 MB | 1.6 MB |
+| Rust (`rustc -O`) | 4.72 s | 4.9 MB | 3.9 MB |
+| Bun 1.4.0 source | 7.34 s | 305 MB | runtime |
+| Bun 1.4.0 `--compile` | 7.43 s | 280 MB | 95 MB |
+| Bun 1.3.11 source | 9.15 s | 454 MB | runtime |
+| Bun 1.3.11 `--compile` | 9.36 s | 413 MB | 95 MB |
+| scriptc static FFI | 105.82 s | 73 MB | 625 KB |
+| scriptc `--dynamic` | 110.76 s | 74 MB | 1.7 MB |
+| Python | 164.64 s | 61 MB | interpreter |
 
 These are full-step results, not a reduced smoke run. The FFI run was performed without rerunning Python, as requested. Bun's compiled binary differs little from Bun source because this workload is dominated by hot-loop execution rather than startup.
+
+Bun was upgraded from 1.3.11 to 1.4.0 before the new Bun measurements. Both
+versions remain in the table for direct comparison; RSS differences should be
+treated cautiously because these are single-run measurements.
 
 ### Build commands
 
