@@ -1,0 +1,12 @@
+{
+  "ffi_format": 1,
+  "functions": [
+    {"name": "signetSqrt", "symbol": "signet_sqrt", "params": ["f64"], "returns": "f64"},
+    {"name": "signetLog", "symbol": "signet_log", "params": ["f64"], "returns": "f64"},
+    {"name": "signetExp", "symbol": "signet_exp", "params": ["f64"], "returns": "f64"},
+    {"name": "signetSin", "symbol": "signet_sin", "params": ["f64"], "returns": "f64"},
+    {"name": "signetCos", "symbol": "signet_cos", "params": ["f64"], "returns": "f64"}
+  ],
+  "libraries": ["./libnative_math.a"],
+  "system_libraries": ["m"]
+}

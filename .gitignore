@@ -1,0 +1,11 @@
+# Generated comparison artifacts
+microgpt
+input.txt
+*.o
+*.a
+ts/.scriptc/
+ts/node_modules/
+ts/*.exe
+
+# Local benchmark output
+results.txt

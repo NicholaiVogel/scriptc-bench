@@ -1,0 +1,5 @@
+{
+  "name": "scriptc-signet-bench",
+  "private": true,
+  "type": "module"
+}
