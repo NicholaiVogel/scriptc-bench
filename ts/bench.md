@@ -13,7 +13,7 @@ The TypeScript port is algorithmically equivalent to `microgpt.py`, but it does 
 | Training steps | 1,000, matching the original `microgpt.py` default |
 | Inference | 20 generated samples |
 | Runs | 1 full run per variant |
-| Host | Linux x86-64, Bun 1.3.11, Node 26.5.0, Python 3.12.12, Rust 1.91.1 |
+| Host | Linux x86-64, Bun 1.3.11, Node 26.5.0, Python 3.12.12, Rust 1.91.1, GCC 15.2.1 |
 | scriptc | 0.0.33 |
 
 The original Python default is 1,000 steps. The benchmark adds an environment override, `MICROGPT_STEPS`, while retaining the 1,000-step default for ordinary use.
@@ -24,6 +24,7 @@ The original Python default is 1,000 steps. The benchmark adds an environment ov
 | --- | ---: | ---: | ---: |
 | Python | 164.64 s | 61 MB | interpreter |
 | Rust (`rustc -O`) | 4.72 s | 4.9 MB | 3.9 MB |
+| C (`cc -std=gnu11 -O2`) | 0.58 s | 48 MB | 25 KB |
 | Bun source | 9.15 s | 454 MB | runtime |
 | Bun `--compile` | 9.36 s | 413 MB | 95 MB |
 | scriptc `--dynamic` | 110.76 s | 74 MB | 1.7 MB |

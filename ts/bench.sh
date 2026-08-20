@@ -10,6 +10,7 @@ RUNS=${2:-1}
 SKIP_PYTHON=${SKIP_PYTHON:-0}
 SCRIPTC=${SCRIPTC:-scriptc}
 RUSTC=${RUSTC:-rustc}
+CC=${CC:-cc}
 TMP=${TMPDIR:-/tmp}/signet-scriptc-bench
 INPUT_URL=https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt
 mkdir -p "$TMP"
@@ -31,6 +32,7 @@ sed "s#\./libnative_math\.a#$TMP/libnative_math.a#" "$HERE/ffi.json" > "$TMP/ffi
 "$SCRIPTC" build microgpt-ffi.ts --ffi "$TMP/ffi.json" --no-keep-c -o "$TMP/microgpt-scriptc-ffi" >/dev/null
 "$SCRIPTC" build microgpt-flat-ffi.ts --ffi "$TMP/ffi.json" --no-keep-c -o "$TMP/microgpt-flat-scriptc-ffi" >/dev/null
 "$RUSTC" -O "$ROOT/microgpt.rs" -o "$TMP/microgpt-rust"
+"$CC" -std=gnu11 -O2 "$ROOT/microgpt.c" -lm -o "$TMP/microgpt-c"
 
 run() {
 	local label=$1
@@ -53,6 +55,7 @@ run bun-flat-compiled "cd '$HERE' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-flat-b
 run scriptc-flat "cd '$HERE' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-flat-scriptc'"
 run scriptc-flat-ffi "cd '$HERE' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-flat-scriptc-ffi'"
 run rust "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-rust'"
+run c "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-c'"
 
 cat "$TMP/results.txt"
 echo "binaries: $TMP"
