@@ -13,6 +13,7 @@ operations, native FFI, memory use, and compiler flags.
 ├── input.txt             # microGPT names dataset
 ├── microgpt.py           # Python reference
 ├── microgpt.c            # C comparison
+├── microgpt.cpp          # C++ comparison (C-compatible implementation)
 ├── microgpt.rs           # Rust comparison
 ├── microgpt.zig          # Zig comparison
 └── ts/
@@ -29,7 +30,7 @@ operations, native FFI, memory use, and compiler flags.
 
 ## Reproduce
 
-Install or build `scriptc`, plus a C compiler, Rust, and Zig, then run the full
+Install or build `scriptc`, plus C/C++ compilers, Rust, and Zig, then run the full
 1,000-step workload:
 
 ```sh
@@ -42,6 +43,7 @@ To build one of them directly from this directory:
 
 ```sh
 cc -std=gnu11 -O2 microgpt.c -lm -o microgpt-c
+g++ -std=gnu++17 -O2 -fpermissive microgpt.cpp -lm -o microgpt-cpp
 rustc -O microgpt.rs -o microgpt-rust
 zig build-exe -O ReleaseFast microgpt.zig -lc -lm -femit-bin=microgpt-zig
 ```

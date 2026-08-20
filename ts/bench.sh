@@ -11,6 +11,7 @@ SKIP_PYTHON=${SKIP_PYTHON:-0}
 SCRIPTC=${SCRIPTC:-scriptc}
 RUSTC=${RUSTC:-rustc}
 CC=${CC:-cc}
+CXX=${CXX:-g++}
 ZIG=${ZIG:-zig}
 TMP=${TMPDIR:-/tmp}/signet-scriptc-bench
 INPUT_URL=https://raw.githubusercontent.com/karpathy/makemore/988aa59/names.txt
@@ -34,6 +35,7 @@ sed "s#\./libnative_math\.a#$TMP/libnative_math.a#" "$HERE/ffi.json" > "$TMP/ffi
 "$SCRIPTC" build microgpt-flat-ffi.ts --ffi "$TMP/ffi.json" --no-keep-c -o "$TMP/microgpt-flat-scriptc-ffi" >/dev/null
 "$RUSTC" -O "$ROOT/microgpt.rs" -o "$TMP/microgpt-rust"
 "$CC" -std=gnu11 -O2 "$ROOT/microgpt.c" -lm -o "$TMP/microgpt-c"
+"$CXX" -std=gnu++17 -O2 -fpermissive "$ROOT/microgpt.cpp" -lm -o "$TMP/microgpt-cpp"
 "$ZIG" build-exe -O ReleaseFast "$ROOT/microgpt.zig" -lc -lm -femit-bin="$TMP/microgpt-zig"
 
 run() {
@@ -58,6 +60,7 @@ run scriptc-flat "cd '$HERE' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-flat-script
 run scriptc-flat-ffi "cd '$HERE' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-flat-scriptc-ffi'"
 run rust "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-rust'"
 run c "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-c'"
+run cpp "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-cpp'"
 run zig "cd '$ROOT' && MICROGPT_STEPS=$STEPS '$TMP/microgpt-zig'"
 
 cat "$TMP/results.txt"
